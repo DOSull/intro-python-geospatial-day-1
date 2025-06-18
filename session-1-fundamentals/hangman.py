@@ -9,7 +9,6 @@
 # the random module allows for randomization functions
 import random
 
-
 def get_matches(letter, word):
     matches = [i for i in range(len(word)) if word[i] == letter]
     return matches
@@ -18,13 +17,11 @@ def replace_letters(indexes, letter, word):
     w = list(word)
     for i in indexes:
         w[i] = letter
-    return ''.join(w)
-
+    return "".join(w)
 
 # open and read a file of words
-f = open('hangmanWords.txt')
-wordlist = f.readlines()
-f.close()
+with open("hangmanWords.txt") as f:
+    wordlist = f.readlines()
 
 # strip of trailing linefeed and convert to upper case
 wordlist = [w.strip().upper() for w in wordlist]
@@ -35,40 +32,38 @@ max_guesses = 10
 # break from loop to end program
 while True:
     wrong_guesses = 0
-    unused_letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    unused_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     # select a word at random from the file
     word = random.choice(wordlist).upper()
     # make a string of the same number of dashes
     user_word = '-' * len(word)
     # Greet the player and tell them what to do
-    print("\nI'm thinking of a word.  You have " + str(max_guesses) \
-     + " wrong guesses to get all its letters.\nI'll let you know when you " \
-     + "guess a letter right.  You can enter more than one letter each time. " \
-     + "Enter * to end.\n\nThe word looks like this:\n\n\t" \
-     + user_word + '\n')
+    print(f"""\nI'm thinking of a word.  You have {str(max_guesses)} wrong guesses to get all its letters.\nI'll let you know when you guess a letter right.  You can enter more than one letter each time.\n\n
+    Enter * to end.\n\nThe word looks like this:\n\n\t{user_word}
+    """)
 
     while True:
         # Get the next guess from the player
-        guesses = input('Wrong guesses: ' + str(wrong_guesses) +
-                          '\nUnused letters: ' + unused_letters +
-                          '\nEnter next guess: ')
+        guesses = input(f"Wrong guesses   : {wrong_guesses}\n" +
+                        f"Unused letters  : {unused_letters}\n" +
+                         "Enter next guess: ")
         # handle the * case -- which indicates player wants to finish
-        if guesses == '*':
-            print ('\n')
-            break
-        if guesses == '':
-            print ('\n')
+        if guesses == "*":
+            print()
+            break  # exits the game guess loop
+        if guesses == "":
+            print()
             continue
 
         # convert the guess to upper case
         guesses = guesses.upper()
         # check that guesses are letters
         if not guesses.isalpha():
-            print('Your guess should be all letters.\n')
+            print("Your guess should be all letters.\n")
             continue
         guess_list = [g for g in guesses if g in unused_letters]
         if len(guess_list) == 0:
-            print('You have already tried all those letters. Try again.\n')
+            print("You have already tried all those letters. Try again.\n")
             continue
         print('\n')
 
@@ -87,19 +82,20 @@ while True:
 
         # Tell user what happened
         if correct_guesses > 0:
-            print('Good guess. The word now looks like this:\n\n\t', user_word, '\n')
+            print(f"Good guess. Word now looks like this:\n\n\t{user_word}\n")
             if user_word == word:
-                print('Congratulations! You got the word with just', wrong_guesses, 'wrong guess(es)', '\n')
+                print(f"""Congratulations! You got the word with just {wrong_guesses} guess{'es' if wrong_guesses > 1 else ''}!\n""")
                 break
         else:
-            print("The word doesn't contain " + guesses + '. Try again.\n\n\t', user_word, '\n')
+            print(f"""The word doesn't contain {guesses}. Try again.\n\n\t{user_word}\n""")
             if wrong_guesses > max_guesses:
-                print('Bad luck, you ran out of guesses. The word was:', word.upper(), '\n')
+                print(f"""Bad luck, you ran out of guesses. The word was: {word.upper()}\n""")
                 break
 
-    again = input('Another game (Y/N)? ')
-    if again == 'y' or again == 'Y':
-        continue
+    again = input("Another game (Y/N)? ")
+    if again.lower() == "y":
+        print()
+        continue  # goes again
     else:
-        print('\nBye!')
-        break
+        print("\nBye!\n")
+        break  # exits completely
