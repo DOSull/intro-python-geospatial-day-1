@@ -1,0 +1,2 @@
+PlatformWithVersion=Python 
+BuildCommands=conda create -n intro-python-1 -c conda-forge python=3.11 jupyter ipywidgets ipycanvas ipykernel geopandas colorama geopandas
