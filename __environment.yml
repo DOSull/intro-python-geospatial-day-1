@@ -1,4 +1,4 @@
-name: intropython1
+name: intro-python-1
 channels:
   - conda-forge
   - defaults
