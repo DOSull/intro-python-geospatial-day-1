@@ -57,71 +57,72 @@ def score_attempt(attempt:str, word:str, miss:str = "."):
         clue[i] = attempt[i].lower()
     return "".join(clue)
 
-congrats = {1: "Genius!"  , 2: "Magnificent.", 3: "Impressive.",
-            4: "Splendid.", 5: "Great."      , 6: "Phew!"}
+if __name__ == "__main__":
+    congrats = {1: "Genius!"  , 2: "Magnificent.", 3: "Impressive.",
+                4: "Splendid.", 5: "Great."      , 6: "Phew!"}
 
-# open and read files of words
-with open('wordlist.txt') as f:
-    answers = f.readlines()
+    # open and read files of words
+    with open('wordlist.txt') as f:
+        answers = f.readlines()
 
-with open('valid_guesses.txt') as f:
-    allowed_words = f.readlines()
+    with open('valid_guesses.txt') as f:
+        allowed_words = f.readlines()
 
-# strip off trailing linefeed and convert to lower case
-answers       = [w.strip().lower() for w in answers]
-allowed_words = [w.strip().lower() for w in allowed_words] + answers
+    # strip off trailing linefeed and convert to lower case
+    answers       = [w.strip().lower() for w in answers]
+    allowed_words = [w.strip().lower() for w in allowed_words] + answers
 
-# Greet the player and tell them what to do
-print("""\nI'm thinking of a 5 letter word.\n
-You have 6 attempts to work it out based on clues I will give in response to
-your guesses. If one of your letters matches a letter in the word and is in the
-right position I will capitalise it. If it is in the word, I will show it in
-lower case. If it is not in the word at all I will mark it with a '.'\n""")
+    # Greet the player and tell them what to do
+    print("""\nI'm thinking of a 5 letter word.\n
+    You have 6 attempts to work it out based on clues I will give in response to
+    your guesses. If one of your letters matches a letter in the word and is in the
+    right position I will capitalise it. If it is in the word, I will show it in
+    lower case. If it is not in the word at all I will mark it with a '.'\n""")
 
-# Whole program nested in infinite loop
-# session (multiple games) loop
-while True:
-    guess_number = 1
-    # select a word at random from the file
-    word = random.choice(answers).lower()
-    
-    # game loop
-    while guess_number < 7:
-        # Get the next guess from the player
-        attempt = input(f"Attempt {guess_number}: ")
-        # handle the * case -- which indicates player wants to finish
-        if attempt == "*":
-            print ()
-            break  # exit game loop
-        if attempt == "":
-            print ()
-            continue  # go around again
-
-        # convert the guess to lower case
-        attempt = attempt.lower()
-        # check that guesses are letters
-        if not attempt.isalpha():
-            print("\nYour guess should be all letters.\n")
-            continue
-        if attempt not in allowed_words:
-            print("\nYour guess is not a word, try again.\n")
-            continue
+    # Whole program nested in infinite loop
+    # session (multiple games) loop
+    while True:
+        guess_number = 1
+        # select a word at random from the file
+        word = random.choice(answers).lower()
         
-        # the gobbledegook here is to put the cursor back after the input prompt
-        # https://gist.github.com/ConnerWill/d4b6c776b509add763e17f9f113fd25b
-        print(f"\033[1A\033[{17}C -->  {score_attempt(attempt, word)}")
-        if attempt == word:
-            print(f"\n{congrats[guess_number]} you got it in {guess_number}.\n")
-            break
+        # game loop
+        while guess_number < 7:
+            # Get the next guess from the player
+            attempt = input(f"Attempt {guess_number}: ")
+            # handle the * case -- which indicates player wants to finish
+            if attempt == "*":
+                print ()
+                break  # exit game loop
+            if attempt == "":
+                print ()
+                continue  # go around again
 
-        guess_number = guess_number + 1
+            # convert the guess to lower case
+            attempt = attempt.lower()
+            # check that guesses are letters
+            if not attempt.isalpha():
+                print("\nYour guess should be all letters.\n")
+                continue
+            if attempt not in allowed_words:
+                print("\nYour guess is not a word, try again.\n")
+                continue
+            
+            # the gobbledegook here is to put the cursor back after the input prompt
+            # https://gist.github.com/ConnerWill/d4b6c776b509add763e17f9f113fd25b
+            print(f"\033[1A\033[{17}C -->  {score_attempt(attempt, word)}")
+            if attempt == word:
+                print(f"\n{congrats[guess_number]} you got it in {guess_number}.\n")
+                break
 
-    if guess_number == 7:
-        print(f"\nBad luck! The answer was {word}.\n")
-    again = input("Another game (Y/N)? ")
-    if again.lower() == "y":
-        print()
-        continue  # go around again
-    else:
-        print("\nBye!\n")
-        break  # exit
+            guess_number = guess_number + 1
+
+        if guess_number == 7:
+            print(f"\nBad luck! The answer was {word}.\n")
+        again = input("Another game (Y/N)? ")
+        if again.lower() == "y":
+            print()
+            continue  # go around again
+        else:
+            print("\nBye!\n")
+            break  # exit
